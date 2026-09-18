@@ -29,8 +29,8 @@ ER.register({
         el('p', {}, '🎯 The station\'s gunnery range sits on the airless moon below, so there is ', el('b', {}, 'no air resistance'),
           '. Destroy all ', el('b', {}, '5 targets'), ' with ', el('b', {}, '14 shells'), '.'),
         el('div', { class: 'control-help' },
-          el('span', {}, el('kbd', {}, '↑'), el('kbd', {}, '↓'), ' angle by 1°'),
-          el('span', {}, el('kbd', {}, '←'), el('kbd', {}, '→'), ' angle by 5°'),
+          el('span', {}, el('kbd', {}, '↑'), el('kbd', {}, '↓'), ' or ', el('kbd', {}, 'W'), el('kbd', {}, 'S'), ' angle (hold to sweep)'),
+          el('span', {}, el('kbd', {}, '←'), el('kbd', {}, '→'), ' or ', el('kbd', {}, 'A'), el('kbd', {}, 'D'), ' angle by 5°'),
           el('span', {}, el('b', {}, 'Hold '), el('kbd', {}, 'Space'), ' to build power, ', el('b', {}, 'release'), ' to fire')),
         el('p', { class: 'muted small' }, 'Each shell explodes and blows a crater in the ground. One target is buried: you will have to dig it out. Run out of shells and the range resets.')),
       el('div', { class: 'game-wrap' }, canvas, overlay),
@@ -38,7 +38,17 @@ ER.register({
       readout);
 
     const ctx = canvas.getContext('2d');
-    let g, raf = 0, last = 0;
+    let g, raf = 0, last = 0, readoutDirty = false, readoutT = 0;
+    const held = new Set(), holdT = {};
+    // arrows or W/S for a 1 degree nudge, arrows or A/D for 5 degrees; holding sweeps
+    const dirFor = (k) => {
+      const key = String(k).toLowerCase();
+      if (key === 'arrowup' || key === 'w') return { dir: 1, fine: true };
+      if (key === 'arrowdown' || key === 's') return { dir: -1, fine: true };
+      if (key === 'arrowright' || key === 'd') return { dir: 1, fine: false };
+      if (key === 'arrowleft' || key === 'a') return { dir: -1, fine: false };
+      return null;
+    };
 
     const hill = (x, cx, w, amp) => { const d = (x - cx) / w; return Math.exp(-d * d) * amp; };
     function buildTerrain() {
@@ -80,7 +90,7 @@ ER.register({
         overlay.append(el('div', { class: 'overlay-card' },
           el('div', { class: 'overlay-emoji' }, '🎯'),
           el('h3', {}, 'Firing Range'),
-          el('p', {}, 'Arrow keys set the angle. Hold Space to build power, release to fire.'),
+          el('p', {}, 'Arrow keys or W/S set the angle (hold them to sweep). Hold Space to build power, release to fire.'),
           el('p', {}, el('b', {}, '14 shells. 5 targets.'), ' The middle one is buried under a hill.'),
           el('button', { class: 'btn btn-sun btn-big', onclick: start }, '▶ Take the controls')));
       } else if (kind === 'fail') {
@@ -131,6 +141,7 @@ ER.register({
       sfx.unlock();
       reset();
       g.running = true;
+      held.clear();
       overlay.hidden = true;
       canvas.focus();
       updateReadout();
@@ -169,20 +180,26 @@ ER.register({
     function aim(delta) {
       if (!g.running) return;
       g.angle = Math.max(5, Math.min(85, g.angle + delta));
-      updateReadout();
+      readoutDirty = true;
     }
 
     const onKeyDown = (e) => {
       if (!g || !g.running) return;
       if (e.target instanceof HTMLInputElement) return;
-      const k = e.key;
-      if (k === 'ArrowUp') { e.preventDefault(); aim(1); }
-      else if (k === 'ArrowDown') { e.preventDefault(); aim(-1); }
-      else if (k === 'ArrowRight') { e.preventDefault(); aim(5); }
-      else if (k === 'ArrowLeft') { e.preventDefault(); aim(-5); }
-      else if (k === ' ') { e.preventDefault(); startCharge(); }
+      const m = dirFor(e.key);
+      if (m) {
+        e.preventDefault();
+        const id = String(e.key).toLowerCase();
+        if (!held.has(id)) { held.add(id); holdT[id] = 0; aim(m.dir * (m.fine ? 1 : 5)); }
+        return;
+      }
+      if (e.key === ' ') { e.preventDefault(); startCharge(); }
     };
-    const onKeyUp = (e) => { if (e.key === ' ') { e.preventDefault(); releaseCharge(); } };
+    const onKeyUp = (e) => {
+      const id = String(e.key).toLowerCase();
+      if (held.has(id)) { held.delete(id); return; }
+      if (e.key === ' ') { e.preventDefault(); releaseCharge(); }
+    };
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
 
@@ -228,6 +245,12 @@ ER.register({
 
     function update(dt) {
       g.msgT = Math.max(0, g.msgT - dt);
+      held.forEach((id) => {
+        const m = dirFor(id);
+        if (!m) return;
+        holdT[id] += dt;
+        if (holdT[id] > 0.2) aim(m.dir * (m.fine ? 34 : 64) * dt);
+      });
       if (g.charging) g.power = Math.min(MAX_POWER, g.power + CHARGE_RATE * dt);
       g.blasts.forEach((b) => { b.r += 150 * dt; b.life -= dt; });
       g.blasts = g.blasts.filter((b) => b.life > 0);
@@ -387,7 +410,7 @@ ER.register({
       ctx.fillStyle = '#e8f6ff';
       ctx.font = 'bold 15px Fredoka, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText(`angle    ${g.angle}°   (↑ ↓ ← →)`, 24, 36);
+      ctx.fillText(`angle    ${Math.round(g.angle)}°   (↑ ↓ / W S)`, 24, 36);
       ctx.fillText('power', 24, 60);
       const shellsLeft = SHELLS - g.shots;
       ctx.fillStyle = shellsLeft <= 3 ? '#ff6b4a' : '#e8f6ff';
@@ -426,7 +449,7 @@ ER.register({
     function updateReadout() {
       readout.innerHTML = '';
       readout.append(
-        el('span', {}, 'angle = ', el('b', {}, g.angle + '°')),
+        el('span', {}, 'angle = ', el('b', {}, Math.round(g.angle) + '°')),
         el('span', {}, 'shells left = ', el('b', {}, String(SHELLS - g.shots))),
         el('span', {}, 'targets left = ', el('b', {}, String(g.targets.filter((tg) => !tg.hit).length))));
       fireBtn.disabled = !canFire();
@@ -437,6 +460,8 @@ ER.register({
       last = now;
       if (g.running) update(dt);
       draw(now / 1000);
+      readoutT += dt;
+      if (readoutDirty && readoutT > 0.12) { readoutT = 0; readoutDirty = false; updateReadout(); }
       raf = requestAnimationFrame(loop);
     }
 

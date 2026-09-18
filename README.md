@@ -33,7 +33,7 @@ Open `index.html` in a browser, or host it on GitHub Pages (below). No install, 
 | Station | Type | Focus |
 |---|---|---|
 | 🚀 Thruster Run | Arcade game | Inertia, F = ma, braking as negative acceleration |
-| 🎯 Firing Range | Arcade game | Projectile motion: arrows aim, hold space to charge power, 14 shells, destructible ground |
+| 🎯 Firing Range | Arcade game | Projectile motion: arrows or W/S aim (hold to sweep), hold space to charge power, 14 shells, destructible ground |
 | 📈 Graph Match | Drag & drop | Matching journeys to d-t and v-t graphs |
 | 📐 Graph Builder | Drag & drop + calculation | Building a v-t graph, gradient and area under the graph |
 | ➡️ Vector Bay | Drag & drop + calculation | Vector/scalar sort, distance vs displacement |
