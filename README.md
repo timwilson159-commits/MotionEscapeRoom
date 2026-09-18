@@ -10,6 +10,7 @@ Students walk a scientist around an orbital lab. There are **10 puzzle stations*
 - Reading and building motion graphs (distance-time and velocity-time, gradient and area)
 - Newton's three laws applied to scenarios, action-reaction pairs and F = ma
 - Vectors vs scalars, distance vs displacement
+- Projectile motion (the firing range): the two motions of a projectile combined
 
 ## Teaching design
 
@@ -32,7 +33,7 @@ Open `index.html` in a browser, or host it on GitHub Pages (below). No install, 
 | Station | Type | Focus |
 |---|---|---|
 | 🚀 Thruster Run | Arcade game | Inertia, F = ma, braking as negative acceleration |
-| 🧑‍🚀 Recoil Escape | Arcade game | Newton's third law: throw tools to move the other way |
+| 🎯 Firing Range | Arcade game | Projectile motion: constant horizontal velocity, constant downward acceleration, destructible ground |
 | 📈 Graph Match | Drag & drop | Matching journeys to d-t and v-t graphs |
 | 📐 Graph Builder | Drag & drop + calculation | Building a v-t graph, gradient and area under the graph |
 | ➡️ Vector Bay | Drag & drop + calculation | Vector/scalar sort, distance vs displacement |

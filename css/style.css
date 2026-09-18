@@ -780,3 +780,10 @@ select.no, input.no { background: #ffe1e1; border-color: var(--coral-dark); }
 .readout b { color: #fff; }
 .answer-word.small-word span { width: 38px; height: 44px; font-size: 1.5rem; background: var(--aqua-dark); }
 .answer-word .gap { background: none; border: none; box-shadow: none; width: 10px; }
+
+/* artillery aim controls */
+.aim-panel { display: grid; gap: 10px; }
+.aim-row { display: grid; grid-template-columns: 90px minmax(0, 1fr) 64px; gap: 12px; align-items: center; font-weight: 600; }
+.aim-slider { width: 100%; accent-color: var(--aqua); height: 28px; }
+.aim-val { font-family: var(--display); font-size: 1.3rem; text-align: right; color: var(--aqua-dark); }
+@media (max-width: 640px) { .aim-row { grid-template-columns: 70px minmax(0, 1fr) 54px; } }

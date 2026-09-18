@@ -62,7 +62,7 @@
     vectors: { x: 208, y: 34, front: [224, 78] },
     laws: { x: 256, y: 34, front: [272, 78] },
     thruster: { x: 18, y: 76, front: [62, 94] },
-    recoil: { x: 18, y: 140, front: [62, 158] },
+    artillery: { x: 18, y: 140, front: [62, 158] },
     speedlab: { x: 270, y: 76, front: [258, 94] },
     crossnumber: { x: 270, y: 140, front: [258, 158] },
     crashlab: { x: 88, y: 172, front: [104, 166] },
@@ -293,17 +293,20 @@
       ctx.beginPath(); ctx.moveTo(x + 20, y + 19); ctx.lineTo(x + 20 - f, y + 21); ctx.lineTo(x + 20, y + 23); ctx.fill();
       px(x + 5, y + 18, 3, 3, '#ff6b4a'); px(x + 5, y + 24, 3, 3, '#22d3ee');
     },
-    recoil(x, y, t) {
-      px(x + 2, y + 2, 28, 28, '#16263f');
-      circle(x + 16, y + 15, 10, '#0a1526');
-      circle(x + 16, y + 15, 8, '#02060f');
-      ctx.save(); ctx.beginPath(); ctx.arc(x + 16, y + 15, 8, 0, Math.PI * 2); ctx.clip();
-      for (let i = 0; i < 6; i++) circle(x + 10 + ((i * 5 + t * 3) % 13), y + 9 + ((i * 3) % 12), 0.6, 'rgba(255,255,255,0.8)');
+    artillery(x, y, t) {
+      px(x + 1, y + 20, 30, 11, '#2a3244');
+      px(x + 3, y + 18, 26, 3, '#5b6478');
+      px(x + 6, y + 8, 3, 3, '#1b2a44'); px(x + 20, y + 5, 3, 3, '#1b2a44');
+      ctx.save();
+      ctx.translate(x + 10, y + 17);
+      ctx.rotate(-0.65 + Math.sin(t) * 0.14);
+      px(0, -2, 15, 4, '#c3d0e8');
       ctx.restore();
-      ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.arc(x + 16, y + 15, 10, 0, Math.PI * 2); ctx.stroke();
-      px(x + 14, y + 25, 4, 5, '#c3d0e8');
-      px(x + 4, y + 6, 4, 8, '#ff6b4a'); px(x + 24, y + 6, 4, 8, '#ffc233');
+      circle(x + 10, y + 17, 4, '#7f93bb');
+      circle(x + 25, y + 13, 4.5, '#ff6b4a');
+      circle(x + 25, y + 13, 2.6, '#ffffff');
+      circle(x + 25, y + 13, 1.1, '#ff6b4a');
+      if (Math.sin(t * 5) > 0.75) circle(x + 19, y + 11, 2.2, '#ffc233');
     },
     graphmatch(x, y, t) {
       px(x + 1, y + 4, 30, 22, '#1b2a44');
