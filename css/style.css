@@ -787,3 +787,11 @@ select.no, input.no { background: #ffe1e1; border-color: var(--coral-dark); }
 .aim-slider { width: 100%; accent-color: var(--aqua); height: 28px; }
 .aim-val { font-family: var(--display); font-size: 1.3rem; text-align: right; color: var(--aqua-dark); }
 @media (max-width: 640px) { .aim-row { grid-template-columns: 70px minmax(0, 1fr) 54px; } }
+
+/* graph cards: fixed size in the tray AND in the drop zones (some have no width of their own) */
+.graph-card { display: block; width: 172px; max-width: 100%; flex: 0 0 auto; }
+.graph-card svg { display: block; width: 100%; height: auto; }
+.mt-card .graph-card { width: 168px; }
+.mt-drop .graph-card { width: 168px; margin: 0 auto; }
+.mt-tray .mt-card { flex: 0 0 auto; }
+@media (max-width: 640px) { .graph-card, .mt-card .graph-card, .mt-drop .graph-card { width: 140px; } }
