@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motion Escape: Station Newton</title>
+<meta name="description" content="A physics escape room about motion, motion graphs, vectors and Newton's three laws.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Lilita+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+</head>
+<body>
+<div id="bubbles" aria-hidden="true"></div>
+
+<header id="topbar">
+  <div class="brand"><span class="brand-icon">🚀</span><div><h1>Motion Escape</h1><p>Orbital Physics Lab: Station Newton</p></div></div>
+  <div class="hud">
+    <div class="hud-pill" title="Symbols found"><span>🔣</span> <b id="hud-codes">0 / 10</b></div>
+    <div class="hud-pill" id="hud-timer" title="Mission time (hints add 5 minutes)"><span>⏱️</span> <b id="hud-time">00:00</b></div>
+    <button class="icon-btn" id="btn-laws" title="Newton's three laws" aria-label="Newton's three laws">📘</button>
+    <button class="icon-btn" id="btn-vectors" title="Vectors and scalars" aria-label="Vectors and scalars">➡️</button>
+    <button class="icon-btn" id="btn-sound" title="Sound on/off" aria-label="Sound on or off">🔊</button>
+    <button class="icon-btn" id="btn-help" title="How to play" aria-label="How to play">❓</button>
+  </div>
+</header>
+
+<main id="app">
+  <section id="room-view">
+    <div class="room-wrap">
+      <canvas id="room" width="960" height="672" aria-label="Top-down view of the orbital lab. Move with arrow keys or WASD, or click where you want to walk."></canvas>
+      <div id="prompt" class="prompt" hidden></div>
+    </div>
+    <p class="controls-tip">Move: <kbd>WASD</kbd>/<kbd>Arrows</kbd> or click the floor &nbsp;·&nbsp; Open a station: <kbd>E</kbd> / <kbd>Space</kbd> or click it</p>
+  </section>
+
+  <aside id="notes">
+    <div class="notes-head">
+      <h2>🔣 Symbol Log</h2>
+      <p>Each station gives one coded symbol. They are logged here automatically.</p>
+    </div>
+    <ol id="notes-list"></ol>
+    <div class="notes-foot">
+      <p>🚪 The airlock needs <b>all 10 symbols</b>, and you must prove you know:</p>
+      <div class="keyword">NEWTON'S 3 LAWS</div>
+    </div>
+  </aside>
+
+  <section id="puzzle-view" hidden></section>
+</main>
+
+<div id="modal-root"></div>
+
+<script src="js/core.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/extras.js"></script>
+<script src="js/art.js"></script>
+<script src="js/reference.js"></script>
+<script src="js/puzzles/thruster.js"></script>
+<script src="js/puzzles/recoil.js"></script>
+<script src="js/puzzles/graphmatch.js"></script>
+<script src="js/puzzles/graphbuild.js"></script>
+<script src="js/puzzles/vectors.js"></script>
+<script src="js/puzzles/laws.js"></script>
+<script src="js/puzzles/speedlab.js"></script>
+<script src="js/puzzles/crossnumber.js"></script>
+<script src="js/puzzles/crashlab.js"></script>
+<script src="js/puzzles/logicgrid.js"></script>
+<script src="js/door.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
